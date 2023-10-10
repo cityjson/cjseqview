@@ -1,6 +1,6 @@
 # viewcjl
 
-A small python program to visualise CityJSONL datasets.
+A small python program to visualise [CityJSONL](https://cityjson.org/cityjsonl) datasets.
 
 ![](demo.png)
 
