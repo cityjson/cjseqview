@@ -17,7 +17,7 @@ pip install numpy
 It reads from stdin a [CityJSONL file](https://cityjson.org/cityjsonl)
 
 ```bash
-bat ./data/b2.city.jsonl | python ./src/viewcjl.py
+cat ./data/b2.city.jsonl | python ./src/viewcjl.py
 ```
 
 ```bash
