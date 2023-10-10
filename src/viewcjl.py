@@ -5,13 +5,17 @@ import json
 import sys
 import numpy as np
 import math
+import click
 
-def main():
+
+@click.command()
+@click.option('--lod_filter', type=str, default=None, help='Which LoD to filter/keep')
+def main(lod_filter):
     ps.init()
+    # click.echo("lod_filter={}".format(lod_filter))
     #-- read first line
     lcount = 1
     j1 = json.loads(sys.stdin.readline())
-
     gvs = np.empty([0, 3], dtype=np.float64)
     gts = np.empty([0, 3], dtype=np.uint32)
     offset = 0
@@ -32,7 +36,7 @@ def main():
             vs = np.asarray(v)
             ts = []
             for co in j["CityObjects"]:
-                extract_surfaces(co, j, vs, ts)
+                extract_surfaces(co, j, vs, ts, lod_filter)
             ts = np.array(ts, dtype=np.uint32).reshape((-1, 3))
             ts += offset
             gvs = np.vstack([gvs, vs])
@@ -42,9 +46,12 @@ def main():
             break
     visualise(gvs, gts)
     
-def extract_surfaces(co, j, vs, ts):
+def extract_surfaces(co, j, vs, ts, lod_filter):
     if 'geometry' in j['CityObjects'][co]:
         for geom in j['CityObjects'][co]['geometry']:
+            if lod_filter is not None:
+                if geom["lod"] != lod_filter:
+                    continue
             if (geom['type'] == 'MultiSurface') or (geom['type'] == 'CompositeSurface'):
                 for i, face in enumerate(geom['boundaries']):
                     if ((len(face) == 1) and (len(face[0]) == 3)):
