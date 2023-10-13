@@ -1,4 +1,4 @@
-# viewcjl
+# cjfview
 
 A small python program to visualise [CityJSONL](https://cityjson.org/cityjsonl) datasets.
 
@@ -13,16 +13,16 @@ pip install numpy
 pip install click
 ```
 
-## Using viewcjl
+## Using cjfview
 
 It reads a [CityJSONL file](https://cityjson.org/cityjsonl) from stdin.
 
 ```bash
-cat ./data/b2.city.jsonl | python ./src/viewcjl.py
+cat ./data/b2.city.jsonl | python ./src/cjfview.py
 ```
 
 ```bash
-cjio --suppress_msg Vienna_102081.city.json subset --random 5 export jsonl stdout | python ./src/viewcjl.py --lod_filter 2
+cjio --suppress_msg Vienna_102081.city.json subset --random 5 export jsonl stdout | python ./src/cjfview.py --lod_filter 2
 ```
 
 
