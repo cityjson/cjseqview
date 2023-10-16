@@ -11,8 +11,17 @@ import click
 
 @click.command()
 @click.option('--lod_filter', type=str, default=None, help='Which LoD to filter/keep')
-def main(lod_filter):
+@click.option('--use3dbag', is_flag=True, help='To read directly what the 3DBAG API exports.')
+def main(lod_filter, use3dbag):
     ps.init()
+    if (use3dbag == False):
+        main_normal(lod_filter)
+    else:
+        main_3dbag(lod_filter)
+
+
+
+def main_normal(lod_filter):
     # click.echo("lod_filter={}".format(lod_filter))
     #-- read first line
     lcount = 1
@@ -46,6 +55,90 @@ def main(lod_filter):
         else:
             break
     visualise(gvs, gts)
+
+def main_3dbag(lod_filter):
+    # click.echo("lod_filter={}".format(lod_filter))
+    #-- read first line
+    j = json.loads(sys.stdin.readline())
+    gvs = np.empty([0, 3], dtype=np.float64)
+    gts = np.empty([0, 3], dtype=np.uint32)
+    offset = 0
+
+    # sys.stdout.write(json.dumps(j["metadata"]) + "\n")
+    jmetadata = j["metadata"]
+
+    if "feature" in j:
+        j1 = j["feature"]
+        if not( "type" in j1 and j1["type"] == 'CityJSONFeature'):
+           raise IOError("Line {} is not of type 'CityJSONFeature'.".format(lcount))
+        #-- do the work
+        v = []
+        for each in j1["vertices"]:
+            x = (each[0] * jmetadata["transform"]["scale"][0]) + jmetadata["transform"]["translate"][0]
+            y = (each[1] * jmetadata["transform"]["scale"][1]) + jmetadata["transform"]["translate"][1]
+            z = (each[2] * jmetadata["transform"]["scale"][2]) + jmetadata["transform"]["translate"][2]
+            v.append([x, y, z])
+        vs = np.asarray(v)
+        ts = []
+        for co in j1["CityObjects"]:
+            extract_surfaces(co, j1, vs, ts, lod_filter)
+        ts = np.array(ts, dtype=np.uint32).reshape((-1, 3))
+        ts += offset
+        gvs = np.vstack([gvs, vs])
+        gts = np.vstack([gts, ts])
+        offset += vs.shape[0]
+    elif "features" in j:
+        for f in j["features"]:
+            j1 = f
+            if not( "type" in j1 and j1["type"] == 'CityJSONFeature'):
+               raise IOError("Line {} is not of type 'CityJSONFeature'.".format(lcount))
+            #-- do the work
+            v = []
+            for each in j1["vertices"]:
+                x = (each[0] * jmetadata["transform"]["scale"][0]) + jmetadata["transform"]["translate"][0]
+                y = (each[1] * jmetadata["transform"]["scale"][1]) + jmetadata["transform"]["translate"][1]
+                z = (each[2] * jmetadata["transform"]["scale"][2]) + jmetadata["transform"]["translate"][2]
+                v.append([x, y, z])
+            vs = np.asarray(v)
+            ts = []
+            for co in j1["CityObjects"]:
+                extract_surfaces(co, j1, vs, ts, lod_filter)
+            ts = np.array(ts, dtype=np.uint32).reshape((-1, 3))
+            ts += offset
+            gvs = np.vstack([gvs, vs])
+            gts = np.vstack([gts, ts])
+            offset += vs.shape[0]
+
+    visualise(gvs, gts)    
+            
+    # if "features" in j:
+    #     for f in j["features"]:
+    #         sys.stdout.write(json.dumps(f) + "\n")
+    # while True:
+    #     line = sys.stdin.readline()
+    #     if line != '':
+    #         lcount += 1
+    #         j = json.loads(line)
+    #         if not( "type" in j and j["type"] == 'CityJSONFeature'):
+    #            raise IOError("Line {} is not of type 'CityJSONFeature'.".format(lcount))
+    #         #-- do the work
+    #         v = []
+    #         for each in j["vertices"]:
+    #             x = (each[0] * j1["transform"]["scale"][0]) + j1["transform"]["translate"][0]
+    #             y = (each[1] * j1["transform"]["scale"][1]) + j1["transform"]["translate"][1]
+    #             z = (each[2] * j1["transform"]["scale"][2]) + j1["transform"]["translate"][2]
+    #             v.append([x, y, z])
+    #         vs = np.asarray(v)
+    #         ts = []
+    #         for co in j["CityObjects"]:
+    #             extract_surfaces(co, j, vs, ts, lod_filter)
+    #         ts = np.array(ts, dtype=np.uint32).reshape((-1, 3))
+    #         ts += offset
+    #         gvs = np.vstack([gvs, vs])
+    #         gts = np.vstack([gts, ts])
+    #         offset += vs.shape[0]
+    #     else:
+    #         break
     
 def extract_surfaces(co, j, vs, ts, lod_filter):
     if 'geometry' in j['CityObjects'][co]:
