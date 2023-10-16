@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 import geom_help
 import polyscope as ps
