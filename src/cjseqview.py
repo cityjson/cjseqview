@@ -92,7 +92,7 @@ def extract_surfaces(co, j, vs, ts, lod_filter):
                 pass
 
 def visualise(vs, fs):
-    ps.set_program_name("viewcjl")
+    ps.set_program_name("cjseqview")
     ps.set_up_dir("z_up")
     ps.set_ground_plane_mode("shadow_only")
     ps.set_ground_plane_height_factor(0.01, is_relative=True)

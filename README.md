@@ -1,6 +1,6 @@
-# cjfview
+# cjseqview
 
-A small python program to visualise [CityJSONL](https://cityjson.org/cityjsonl) datasets.
+A small python program to visualise [CityJSONSeq](https://cityjson.org/cityjsonseq) datasets.
 
 ![](demo.png)
 
@@ -15,7 +15,7 @@ pip install click
 
 ## Using cjfview
 
-It reads a [CityJSONL file](https://cityjson.org/cityjsonl) from stdin.
+It reads a [CityJSONSeq](https://cityjson.org/cityjsonseq) from stdin.
 
 ```bash
 cat ./data/b2.city.jsonl | python ./src/cjfview.py
