@@ -45,6 +45,9 @@ def main(lod_filter):
             offset += vs.shape[0]
         else:
             break
+    if gvs.size == 0:
+        print("No CityJSONFeature in the stream. Abort.")
+        sys.exit()
     visualise(gvs, gts)
     
 def extract_surfaces(co, j, vs, ts, lod_filter):
