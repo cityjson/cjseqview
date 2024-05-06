@@ -53,8 +53,7 @@ def main(lod_filter):
             visualise_rr(vs, ts, name)
         else:
             break
-    # visualise(gvs, gts)
-
+ 
 def visualise_rr(vs, ts, name):
     #-- random colour
     cr = random.randint(0, 256)
@@ -77,30 +76,6 @@ def visualise_rr(vs, ts, name):
         ),
     )
 
-def visualise_rr_2(vs, ts, name):
-    #-- random colour
-    cr = random.randint(0, 256)
-    cg = random.randint(0, 256)   
-    cb = random.randint(0, 256)
-    vcs = []
-    for i in range(len(vs)):
-        vcs.append([cr, cg, cb])
-    # np.array(vns)    
-    # c = np.vstack((cr, cg, cb)).transpose()
-
-    mesh = trimesh.Trimesh(vertices=vs, faces=ts)
-    rr.log(
-        name,
-        rr.Mesh3D(
-            vertex_positions=mesh.vertices,
-            vertex_colors=np.array(vcs),
-            vertex_normals=mesh.vertex_normals,  
-            # vertex_texcoords=vertex_texcoords,
-            # albedo_texture=albedo_texture,
-            indices=mesh.faces,
-            # mesh_material=mesh_material,
-        ),
-    )
 
 
 def extract_surfaces(co, j, vs, ts, lod_filter):
