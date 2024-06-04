@@ -13,7 +13,9 @@ import random
 @click.command()
 @click.option('--lod_filter', type=str, default=None, help='Which LoD to filter/keep')
 def main(lod_filter):
-    rr. init("rerun_tin", spawn=True)
+    rr.init("rerun_tin", recording_id="my_shared_recording")
+    rr.spawn()
+    # rr.init("rerun_tin", spawn=True)
     # click.echo("lod_filter={}".format(lod_filter))
     #-- read first line
     lcount = 1
@@ -47,7 +49,8 @@ def main(lod_filter):
                 vs2.append(vs[t[1]])
                 vs2.append(vs[t[2]])
                 i += 3
-            name = "n_{}".format(lcount)
+            # name = "n_{}".format(lcount)
+            name = "{}".format(co)
             vs = np.asarray(vs2)
             ts = np.array(ts2, dtype=np.uint32).reshape((-1, 3))
             visualise_rr(vs, ts, name)
@@ -75,6 +78,7 @@ def visualise_rr(vs, ts, name):
             # mesh_material=mesh_material,
         ),
     )
+
 
 
 
